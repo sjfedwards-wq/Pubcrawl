@@ -1,23 +1,23 @@
-const SUPABASE_URL = "YOUR_REAL_PROJECT_URL";
-const SUPABASE_KEY = "YOUR_REAL_PUBLISHABLE_KEY";
+const SUPABASE_URL = "https://YOUR_PROJECT_ID.supabase.co";
+const SUPABASE_KEY = "YOUR_PUBLISHABLE_KEY";
 
-const supabaseClient = window.supabase.createClient(
+const client = window.supabase.createClient(
   SUPABASE_URL,
   SUPABASE_KEY
 );
 
 async function loadPubs() {
-  const { data, error } = await supabaseClient
+  const response = await client
     .from("pubs")
     .select("*")
     .order("sort_order");
 
-  if (error) {
-    console.error("Supabase error:", error);
+  if (response.error) {
+    console.error(response.error);
     return;
   }
 
-  pubs = data.map(p => ({
+  pubs = response.data.map(p => ({
     num: p.sort_order,
     name: p.name,
     start: p.arrival_time,
@@ -28,7 +28,7 @@ async function loadPubs() {
   }));
 
   renderCards();
-  liveTracker();
 }
 
 document.addEventListener("DOMContentLoaded", loadPubs);
+``
