@@ -6,26 +6,26 @@
   <title>Leicester Pub Crawl</title>
 
   <style>
-    *{margin:0;padding:0;box-sizing:border-box;}
-    body{font-family:Arial,Helvetica,sans-serif;background:#111;color:white;padding-bottom:120px;}
-    header{background:#000;padding:20px;position:sticky;top:0;z-index:100;border-bottom:1px solid #222;}
-    h1{font-size:28px;font-weight:700;}
-    .sub{color:#aaa;margin-top:5px;font-size:14px;}
-    .live-box{margin-top:15px;background:#1c1c1c;padding:15px;border-radius:16px;}
-    .live-label{font-size:12px;color:#00d084;font-weight:bold;letter-spacing:1px;margin-bottom:6px;}
-    #currentPub{font-size:22px;font-weight:bold;margin-bottom:6px;}
-    #countdown{color:#ccc;font-size:14px;}
-    .container{padding:16px;}
-    .card{background:#1b1b1b;border-radius:18px;overflow:hidden;margin-bottom:18px;}
-    .card img{width:100%;height:220px;object-fit:cover;}
-    .info{padding:16px;}
-    .number{background:#00d084;color:#000;font-weight:bold;display:inline-block;padding:5px 10px;border-radius:30px;font-size:13px;margin-bottom:10px;}
-    .name{font-size:24px;font-weight:bold;margin-bottom:8px;}
-    .time{color:#00d084;font-size:16px;font-weight:bold;margin-bottom:8px;}
-    .address{color:#bbb;font-size:14px;margin-bottom:14px;}
-    .btn{display:block;width:100%;text-align:center;padding:14px;background:white;color:black;font-weight:bold;text-decoration:none;border-radius:12px;font-size:16px;}
-    footer{position:fixed;bottom:0;left:0;right:0;background:#000;padding:14px;text-align:center;font-size:14px;border-top:1px solid #222;color:#aaa;}
-    .highlight{border:2px solid #00d084;}
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family: Arial, Helvetica, sans-serif; background:#111; color:white; padding-bottom:120px; }
+    header { background:#000; padding:20px; position:sticky; top:0; border-bottom:1px solid #222; }
+    h1 { font-size:28px; }
+    .sub { color:#aaa; margin-top:5px; font-size:14px; }
+    .live-box { margin-top:15px; background:#1c1c1c; padding:15px; border-radius:16px; }
+    .live-label { font-size:12px; color:#00d084; font-weight:bold; margin-bottom:6px; }
+    #currentPub { font-size:22px; font-weight:bold; }
+    #countdown { color:#ccc; font-size:14px; }
+    .container { padding:16px; }
+    .card { background:#1b1b1b; border-radius:18px; overflow:hidden; margin-bottom:18px; }
+    .card img { width:100%; height:220px; object-fit:cover; }
+    .info { padding:16px; }
+    .number { background:#00d084; color:#000; font-weight:bold; padding:5px 10px; border-radius:30px; display:inline-block; margin-bottom:10px; }
+    .name { font-size:22px; margin-bottom:6px; }
+    .time { color:#00d084; margin-bottom:6px; }
+    .address { color:#bbb; margin-bottom:12px; }
+    .btn { display:block; width:100%; padding:12px; background:white; color:black; font-weight:bold; text-align:center; text-decoration:none; border-radius:12px; }
+    footer { position:fixed; bottom:0; left:0; right:0; background:#000; padding:14px; text-align:center; color:#aaa; }
+    .highlight { border:2px solid #00d084; }
   </style>
 </head>
 
@@ -47,50 +47,33 @@
 <footer>• Pace Yourself • Stay Groovy</footer>
 
 <script>
-let pubs = [];
+  // This will be populated by Supabase
+  let pubs = [];
 
-function renderCards(){
-  let html="";
-  pubs.forEach(pub=>{
-    html += `
-      <div class="card" id="pub${pub.num}">
+  function renderCards() {
+    const list = document.getElementById("pubList");
+    list.innerHTML = "";
+
+    pubs.forEach(pub => {
+      const card = document.createElement("div");
+      card.className = "card";
+      card.id = "pub" + pub.num;
+
+      card.innerHTML = `
         <img src="${pub.img<div class="info">
           <div class="number">STOP ${pub.num}</div>
           <div class="name">${pub.name}</div>
-          <div class="time">${pub.start} - ${pub.end}</div>
+          <div class="time">${pub.start} – ${pub.end}</div>
           <div class="address">${pub.address}</div>
-          <a class="btn" href="${pub.map}" target="_blank/div>`;
-  });
-  document.getElementById("pubList").innerHTML = html;
-}
-
-function toMinutes(time){
-  let parts=time.split(":");
-  return parseInt(parts[0])*60 + parseInt(parts[1]);
-}
-
-function liveTracker(){
-  let now=new Date();
-  let mins=now.getHours()*60+now.getMinutes();
-  let found=false;
-
-  for(let pub of pubs){
-    let start=toMinutes(pub.start);
-    let end=toMinutes(pub.end);
-    if(mins>=start && mins<=end){
-      document.getElementById("currentPub").innerText="📍 "+pub.name;
-      document.getElementById("countdown").innerText="Leave at "+pub.end;
-      document.querySelectorAll(".card").forEach(c=>c.classList.remove("highlight"));
-      document.getElementById("pub"+pub.num)?.classList.add("highlight");
-      found=true;
-      break;
-    }
+          <a class="btn" href="${pub.map}" target="_blank;
+      list.appendChild(card);
+    });
   }
-  if(!found){
-    document.getElementById("currentPub").innerText="🍺 Crawl Not Live Yet";
-    document.getElementById("countdown").innerText="Get ready…";
+
+  function liveTracker() {
+    document.getElementById("currentPub").innerText = "Awaiting admin update…";
+    document.getElementById("countdown").innerText = "";
   }
-}
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
