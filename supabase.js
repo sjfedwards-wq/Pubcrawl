@@ -63,8 +63,10 @@ countdownEl.classList.add("header-animate");
 renderCards();
 }
 
+// Initial load
 document.addEventListener("DOMContentLoaded", loadPubs);
 
-// Refresh public page every 30 seconds
-setInterval(loadPubs, 30000);
+// Refresh every 5 seconds
+setInterval(loadPubs, 5000);
+
 
