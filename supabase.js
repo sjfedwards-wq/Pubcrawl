@@ -27,8 +27,12 @@ async function loadPubs() {
     map: p.maps_link
   }));
 
-  renderCards();
+
+renderCards();
 }
 
 document.addEventListener("DOMContentLoaded", loadPubs);
-``
+
+// Refresh public page every 30 seconds
+setInterval(loadPubs, 30000);
+
