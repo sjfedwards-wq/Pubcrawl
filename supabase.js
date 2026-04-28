@@ -31,16 +31,31 @@ async function loadPubs() {
   }));
 
 
+
 // Update the LIVE NOW header
 const current = pubs.find(p => p.status === "current");
 
+const currentPubEl = document.getElementById("currentPub");
+const countdownEl = document.getElementById("countdown");
+
+currentPubEl.classList.remove("header-animate");
+countdownEl.classList.remove("header-animate");
+
+void currentPubEl.offsetWidth; // force reflow
+void countdownEl.offsetWidth;
+
 if (current) {
-  document.getElementById("currentPub").textContent = current.name;
-  document.getElementById("countdown").textContent =
-    current.start + " – " + current.end;
+  currentPubEl.textContent = current.name;
+  countdownEl.textContent = current.start + " – " + current.end;
 } else {
-  document.getElementById("currentPub").textContent = "Awaiting crawl start";
-  document.getElementById("countdown").textContent = "Get ready…";
+  currentPubEl.textContent = "Awaiting crawl start";
+  countdownEl.textContent = "Get ready…";
+}
+
+currentPubEl.classList.add("header-animate");
+countdownEl.classList.add("header-animate");
+
+
 
 }
 ``
