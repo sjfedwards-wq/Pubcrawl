@@ -47,7 +47,6 @@
 <footer>• Pace Yourself • Stay Groovy</footer>
 
 <script>
-  // This will be populated by Supabase
   let pubs = [];
 
   function renderCards() {
@@ -66,6 +65,7 @@
           <div class="time">${pub.start} – ${pub.end}</div>
           <div class="address">${pub.address}</div>
           <a class="btn" href="${pub.map}" target="_blank;
+
       list.appendChild(card);
     });
   }
