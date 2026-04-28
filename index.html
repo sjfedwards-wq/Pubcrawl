@@ -53,29 +53,43 @@
 
 <footer>• Pace Yourself • Stay Groovy</footer>
 
-<script>
-let pubs=[];
 
-function renderCards(){
-  const list=document.getElementById("pubList");
-  list.innerHTML="";
-  pubs.forEach(pub=>{
-    let cls="card";
-    if(pub.status==="current")cls+=" current";
-    if(pub.status==="completed")cls+=" completed";
-    list.innerHTML+=
-      '<div class="'+cls+'">'+
-      '<img src="'+pub.img+'">'+
-      '<div class="info">'+
-      '<div class="number">STOP '+pub.num+'</div>'+
-      '<div class="name">'+pub.name+'</div>'+
-      '<div class="time">'+pub.start+' - '+pub.end+'</div>'+
-      '<div class="address">'+pub.address+'</div>'+
-      '<a class="btn" href="'+pub.map+'" target="_blank">Directions</a>'+
-      '</div></div>';
+
+<script>
+let pubs = [];
+
+function renderCards() {
+  const list = document.getElementById("pubList");
+  list.innerHTML = "";
+
+  pubs.forEach(pub => {
+    const card = document.createElement("div");
+    card.classList.add("card");
+
+    if (pub.status === "current") {
+      card.classList.add("current");
+    }
+
+    if (pub.status === "completed") {
+      card.classList.add("completed");
+    }
+
+    card.innerHTML = `
+     <img src="{pub.img}">
+      <div class="info">
+        <div class="number">STOP ${pub.num}</div>
+        <div class="name">${pub.name}</div>
+        <div class="time">${pub.start} - ${pub.end}</div>
+        <div class="address">${pub.address}</div>
+        <a class="btn" href="${pub.map}" target="_blank">Directions</a>
+      </div>
+    `;
+    list.appendChild(card);
   });
 }
 </script>
+
+
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase.js"></script>
