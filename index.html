@@ -172,44 +172,7 @@ border:2px solid #00d084;
 
 <script>
 
-const pubs = [
-
-{num:1,name:"Clarendon",start:"12:00",end:"12:25",address:"7-9 West Ave, Leicester",img:"https://i2-prod.leicestermercury.co.uk/incoming/article2736296.ece/ALTERNATES/s1200/1_003CG_TEM_050419ClarendonClarendonJPG.jpg",map:"https://maps.app.goo.gl/tkxmMhCtK9aQJ5Fd8"},
-
-{num:2,name:"Queens Road Tap",start:"12:30",end:"12:55",address:"109 Queens Road",img:"https://tollgatebrewery.co.uk/wp-content/uploads/2022/08/visit-queens-road-tap-external-cropped.jpg",map:"https://maps.app.goo.gl/MvTxPbHLWEh34HBk7"},
-
-{num:3,name:"Old Horse",start:"13:05",end:"13:25",address:"198 London Rd",img:"https://media-cdn.tripadvisor.com/media/photo-s/14/3f/46/95/frontage.jpg",map:"https://maps.app.goo.gl/F9rFMjUTckGYg4ii6"},
-
-{num:4,name:"Loaded Dog",start:"13:30",end:"13:55",address:"144 London Rd",img:"https://i2-prod.leicestermercury.co.uk/incoming/article8926054.ece/ALTERNATES/s615/0_loaded.jpg",map:"https://maps.app.goo.gl/ApCfnmMWJuUdB7K67"},
-
-{num:5,name:"Marquis",start:"14:00",end:"14:25",address:"139 London Rd",img:"https://storyofleicester.info/media/1152/marquis_of_wellington_002.jpg",map:"https://maps.app.goo.gl/tKZmZzMUHKLNknrs6"},
-
-{num:6,name:"Barley Mow",start:"14:35",end:"14:50",address:"149 Granby St",img:"https://proper-pubs.com/wp-content/uploads/2022/09/A0108.jpg",map:"https://maps.app.goo.gl/8essWdZmNBBk3K536"},
-
-{num:7,name:"Roxy Ballroom",start:"15:00",end:"15:25",address:"17-23 Belvoir St",img:"https://i2-prod.leicestermercury.co.uk/incoming/article8533602.ece/ALTERNATES/s1227b/0_rox1.jpg",map:"https://maps.app.goo.gl/f5Ycr7busVotfbu77"},
-
-{num:8,name:"Corn Exchange",start:"15:35",end:"15:55",address:"Market Place",img:"https://i2-prod.leicestermercury.co.uk/incoming/article7618530.ece/ALTERNATES/s1227b/1_002CornJPG.jpg",map:"https://maps.app.goo.gl/yn2E9KTy16k5mSts5"},
-
-{num:9,name:"Knight & Garter",start:"16:00",end:"16:25",address:"14 Hotel St",img:"https://i2-prod.leicestermercury.co.uk/incoming/article1599939.ece/ALTERNATES/s810/1_018CG_TEM_180518garter_garterJPG.jpg",map:"https://maps.app.goo.gl/F7etGRE3XRmT8Eyv7"},
-
-{num:10,name:"Tonne",start:"16:30",end:"16:55",address:"St Martins Walk",img:"https://d2s8km3brsjp0y.cloudfront.net/eyJidWNrZXQiOiJ3aGF0cHViIiwia2V5IjoiTEVJXC9MRUkrNTI2LTE2OTcwNy0xNTAwLTExMjUuanBnIiwiZWRpdHMiOnsicmVzaXplIjp7IndpZHRoIjoxNTAwLCJoZWlnaHQiOjExMjUsImZpdCI6ImNvdmVyIn0sInJvdGF0ZSI6bnVsbH19",map:"https://maps.app.goo.gl/SQTFLmNa3aaKBFgf6"},
-
-{num:11,name:"Globe",start:"17:00",end:"17:25",address:"43 Silver St",img:"https://tse4.mm.bing.net/th/id/OIP.bL8GJIhTapT-ehtbZYs8lwHaFj?rs=1&pid=ImgDetMain&o=7&rm=3",map:"https://maps.app.goo.gl/YBzdg6AKy7zsQFWv6"},
-
-{num:12,name:"Gadabout",start:"17:30",end:"17:55",address:"10 Guildhall Ln",img:"https://i2-prod.leicestermercury.co.uk/incoming/article806234.ece/ALTERNATES/s1200/1_LECG20171117F-047_C.jpg",map:"https://maps.app.goo.gl/MW1ZACq41Tx96qNY7"},
-
-{num:13,name:"O Neils",start:"18:00",end:"18:25",address:"16 Loseby Ln",img:"https://dynamic-media-cdn.tripadvisor.com/media/photo-o/2b/05/0a/68/your-new-o-neill-s-leicester.jpg?w=1200&h=-1&s=1",map:"https://maps.app.goo.gl/C5gLZpvmJfjNJ8oC8"},
-
-{num:14,name:"Firebug",start:"18:30",end:"18:55",address:"1 Millstone Ln",img:"https://www.dmu.ac.uk/webimages/About-DMU-images/News-images/2019/August/VENUE-Firebug.jpg",map:"https://maps.app.goo.gl/3iSyVjLD4xRdB24M8"},
-
-{num:15,name:"Two Tailed",start:"19:00",end:"19:20",address:"22 Millstone Ln",img:"https://d2s8km3brsjp0y.cloudfront.net/eyJidWNrZXQiOiJ3aGF0cHViIiwia2V5IjoiTEVJXC9MRUkrNTIzLTk3ODQzLTEwMDItNzUyLmpwZyIsImVkaXRzIjp7InJlc2l6ZSI6eyJ3aWR0aCI6ODAwLCJoZWlnaHQiOjYwMCwiZml0IjoiY292ZXIifX19",map:"https://maps.app.goo.gl/B7mzoonsZFsVQtMY6"},
-
-{num:16,name:"Castle",start:"19:30",end:"19:55",address:"Castle View",img:"https://www.greatfoodclub.co.uk/wp-content/uploads/2024/01/castle-leicester-002.jpg",map:"https://maps.app.goo.gl/qfJz1XzFE43qg9Yt9"},
-
-{num:17,name:"Soar Point",start:"20:00",end:"21:00",address:"25 The Newarke",img:"https://images.otstatic.com/prod1/37242306/2/large.jpg",map:"https://maps.app.goo.gl/8YF6yHLz3pCmbwAj6"}
-
-];
-
+let pubs = [];
 function renderCards(){
 let html="";
 pubs.forEach(pub=>{
@@ -263,10 +226,6 @@ document.getElementById("currentPub").innerHTML="🍺 Crawl Not Live Yet";
 document.getElementById("countdown").innerHTML="Get ready...";
 }
 }
-
-renderCards();
-liveTracker();
-setInterval(liveTracker,30000);
 
 </script>
 
