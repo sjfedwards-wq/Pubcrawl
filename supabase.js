@@ -25,8 +25,22 @@ async function loadPubs() {
     address: p.address,
     img: p.image_url,
     map: p.maps_link
+    status: p.status
   }));
 
+
+// Update the LIVE NOW header
+const current = pubs.find(p => p.status === "current");
+
+if (current) {
+  document.getElementById("currentPub").textContent = current.name;
+  document.getElementById("countdown").textContent =
+    current.start + " – " + current.end;
+} else {
+  document.getElementById("currentPub").textContent = "No pub currently live";
+  document.getElementById("countdown").textContent = "Checking schedule…";
+}
+``
 
 renderCards();
 }
