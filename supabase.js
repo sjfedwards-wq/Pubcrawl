@@ -1,19 +1,19 @@
-const SUPABASE_URL = "https://gydfaowdhubrjweulnrv.supabase.co/rest/v1/";
-const SUPABASE_KEY = "sb_publishable_TVuKKjTyZvpz40ROHPIi3g_LcNav48N";
+const SUPABASE_URL = "YOUR_REAL_PROJECT_URL";
+const SUPABASE_KEY = "YOUR_REAL_PUBLISHABLE_KEY";
 
-const supabase = window.supabase.createClient(
+const supabaseClient = window.supabase.createClient(
   SUPABASE_URL,
   SUPABASE_KEY
 );
 
 async function loadPubs() {
-  const { data, error } = await supabase
+  const { data, error } = await supabaseClient
     .from("pubs")
     .select("*")
     .order("sort_order");
 
   if (error) {
-    console.error(error);
+    console.error("Supabase error:", error);
     return;
   }
 
@@ -28,6 +28,7 @@ async function loadPubs() {
   }));
 
   renderCards();
+  liveTracker();
 }
 
 document.addEventListener("DOMContentLoaded", loadPubs);
