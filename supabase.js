@@ -1,3 +1,5 @@
+// v2.1 - force redeploy
+
 const SUPABASE_URL = "https://gydfaowdhubrjweulnrv.supabase.co";
 const SUPABASE_KEY = "sb_publishable_TVuKKjTyZvpz40ROHPIi3g_LcNav48N";
 
