@@ -1,242 +1,41 @@
-```html
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Leicester Pub Crawl</title>
-
-<style>
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-}
-
-body{
-font-family:Arial, Helvetica, sans-serif;
-background:#111;
-color:white;
-padding-bottom:120px;
-}
-
-header{
-background:#000;
-padding:20px;
-position:sticky;
-top:0;
-z-index:100;
-border-bottom:1px solid #222;
-}
-
-h1{
-font-size:28px;
-font-weight:700;
-}
-
-.sub{
-color:#aaa;
-margin-top:5px;
-font-size:14px;
-}
-
-.live-box{
-margin-top:15px;
-background:#1c1c1c;
-padding:15px;
-border-radius:16px;
-}
-
-.live-label{
-font-size:12px;
-color:#00d084;
-font-weight:bold;
-letter-spacing:1px;
-margin-bottom:6px;
-}
-
-#currentPub{
-font-size:22px;
-font-weight:bold;
-margin-bottom:6px;
-}
-
-#countdown{
-color:#ccc;
-font-size:14px;
-}
-
-.container{
-padding:16px;
-}
-
-.card{
-background:#1b1b1b;
-border-radius:18px;
-overflow:hidden;
-margin-bottom:18px;
-box-shadow:0 8px 18px rgba(0,0,0,0.35);
-}
-
-.card img{
-width:100%;
-height:220px;
-object-fit:cover;
-}
-
-.info{
-padding:16px;
-}
-
-.number{
-background:#00d084;
-color:#000;
-font-weight:bold;
-display:inline-block;
-padding:5px 10px;
-border-radius:30px;
-font-size:13px;
-margin-bottom:10px;
-}
-
-.name{
-font-size:24px;
-font-weight:bold;
-margin-bottom:8px;
-}
-
-.time{
-color:#00d084;
-font-size:16px;
-font-weight:bold;
-margin-bottom:8px;
-}
-
-.address{
-color:#bbb;
-font-size:14px;
-line-height:1.4;
-margin-bottom:14px;
-}
-
-.btn{
-display:block;
-width:100%;
-text-align:center;
-padding:14px;
-background:white;
-color:black;
-font-weight:bold;
-text-decoration:none;
-border-radius:12px;
-font-size:16px;
-}
-
-footer{
-position:fixed;
-bottom:0;
-left:0;
-right:0;
-background:#000;
-padding:14px;
-text-align:center;
-font-size:14px;
-border-top:1px solid #222;
-color:#aaa;
-}
-
-.highlight{
-border:2px solid #00d084;
-}
-</style>
-</head>
-
-<body>
-
-<header>
-<h1>🍻 Leicester Pub Crawl</h1>
-<div class="sub">Uber-style live crawl tracker</div>
-
-<div class="live-box">
-<div class="live-label">LIVE NOW</div>
-<div id="currentPub">Loading...</div>
-<div id="countdown">Checking schedule...</div>
-</div>
-</header>
-
-<div class="container" id="pubList"></div>
-
-<footer>
-• Pace Yourself • Stay Groovy
-</footer>
-
 <script>
 
 let pubs = [];
+
 function renderCards(){
-let html="";
-pubs.forEach(pub=>{
-html += `
-<div class="card" id="pub${pub.num}">
-<img src="${pub.img}">
-<div class="info">
-<div class="number">STOP ${pub.num}</div>
-<div class="name">${pub.name}</div>
-<div class="time">${pub.start} - ${pub.end}</div>
-<div class="address">${pub.address}</div>
-<a class="btn" href="${pub.map}" target="_blank">Directions</a>
-</div>
-</div>
-`;
-});
-document.getElementById("pubList").innerHTML = html;
+  let html="";
+  pubs.forEach(pub=>{
+    html += `
+      <div class="card" id="pub${pub.num}">
+        <img src="${pub    <div class="info">
+          <div class="number">STOP ${pub.num}</div>
+          <div class="name">${pub.name}</div>
+          <div class="time">${pub.start} - ${pub.end}</div>
+          <div class="address">${pub.address}</div>
+          ${pub.map}Directions</a>
+        </div>
+      </div>
+    `;
+  });
+  document.getElementById("pubList").innerHTML = html;
 }
 
 function toMinutes(time){
-let parts=time.split(":");
-return parseInt(parts[0])*60 + parseInt(parts[1]);
+  let parts=time.split(":");
+  return parseInt(parts[0])*60 + parseInt(parts[1]);
 }
 
 function liveTracker(){
-let now = new Date();
-let mins = now.getHours()*60 + now.getMinutes();
+  let now = new Date();
+  let mins = now.getHours()*60 + now.getMinutes();
+  let found = false;
 
-let found = false;
+  for(let pub of pubs){
+    let start = toMinutes(pub.start);
+    let end = toMinutes(pub.end);
 
-for(let pub of pubs){
+    if(mins >= start && mins <= end){
+      document.getElementById("currentPub").innerHTML = "📍 " + pub.name;
+      document.getElementById("countdown").innerHTML = "Leave at " + pub.end;
 
-let start = toMinutes(pub.start);
-let end = toMinutes(pub.end);
-
-if(mins >= start && mins <= end){
-
-document.getElementById("currentPub").innerHTML="📍 " + pub.name;
-document.getElementById("countdown").innerHTML="Leave at " + pub.end;
-
-document.querySelectorAll(".card").forEach(c=>c.classList.remove("highlight"));
-document.getElementById("pub"+pub.num).classList.add("highlight");
-
-found = true;
-break;
-}
-}
-
-if(!found){
-document.getElementById("currentPub").innerHTML="🍺 Crawl Not Live Yet";
-document.getElementById("countdown").innerHTML="Get ready...";
-}
-}
-
-</script>
-
- 
-<!-- Supabase client -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-<!-- Your app logic -->
-<script src="supabase.js"></script>
-``
- 
-</body>
-</html>
-```
+      document.querySelectorAll(".card").forEach(c => c.classList.remove("highlight"));
