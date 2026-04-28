@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Pub Crawl Admin</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background:#111;
+      color:white;
+      padding:20px;
+    }
+
+    .pub {
+      background:#1b1b1b;
+      border-radius:10px;
+      padding:14px;
+      margin-bottom:12px;
+    }
+
+    button {
+      margin-top:8px;
+      padding:8px 12px;
+      border:none;
+      border-radius:6px;
+      font-weight:bold;
+      cursor:pointer;
+    }
+
+    .current { background:#ff9800; color:black; }
+    .complete { background:#00d084; color:black; }
+  </style>
+</head>
+
+<body>
+
+<h1>🍻 Pub Crawl Admin</h1>
+<div id="adminList">Loading…</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="admin.js"></script>
+
+</body>
+</html>
