@@ -26,7 +26,7 @@ async function loadPubs() {
     end: p.departure_time,
     address: p.address,
     img: p.image_url,
-    map: p.maps_link
+    map: p.maps_link,
     status: p.status
   }));
 
