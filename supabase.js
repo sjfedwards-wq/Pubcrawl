@@ -56,3 +56,6 @@ async function loadPubs() {
   // ----- RENDER CARDS -----
   renderCards();
 }
+
+document.addEventListener("DOMContentLoaded", loadPubs);
+setInterval(loadPubs, 5000)
