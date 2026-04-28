@@ -77,40 +77,40 @@
 
 <footer>• Pace Yourself • Stay Groovy</footer>
 
+
 <script>
- 
 let pubs = [];
 
-  function renderCards() {
-    const list = document.getElementById("pubList");
-    list.innerHTML = "";
+function renderCards() {
+  const list = document.getElementById("pubList");
+  list.innerHTML = "";
 
-    pubs.forEach(pub => {
-      let cardClass = "card";
+  pubs.forEach(pub => {
+    let cardClass = "card";
 
-      if (pub.status === "current") {
-        cardClass += " current";
-      }
+    if (pub.status === "current") {
+      cardClass += " current";
+    }
 
-      if (pub.status === "completed") {
-        cardClass += " completed";
-      }
+    if (pub.status === "completed") {
+      cardClass += " completed";
+    }
 
-      list.innerHTML +=
-        '<div class="' + cardClass + '">' +
-          '<img src="' + pub.img + '">' +
-          '<div class="info">' +
-            '<div class="number">STOP ' + pub.num + '</div>' +
-            '<div class="name">' + pub.name + '</div>' +
-            '<div class="time">' + pub.start + ' - ' + pub.end + '</div>' +
-            '<div class="address">' + pub.address + '</div>' +
-            '<a class="btn" href="' + pub.map + '" target="_blank">Directions</a>' +
-          '</div>' +
-        '</div>';
-    });
-  }
-
+    list.innerHTML +=
+      '<div class="' + cardClass + '">' +
+        '<img src="' + pub.img + '">' +
+        '<div class="info">' +
+          '<div class="number">STOP ' + pub.num + '</div>' +
+          '<div class="name">' + pub.name + '</div>' +
+          '<div class="time">' + pub.start + ' - ' + pub.end + '</div>' +
+          '<div class="address">' + pub.address + '</div>' +
+          '<a class="btn" href="' + pub.map + '" target="_blank">Directions</a>' +
+        '</div>' +
+      '</div>';
+  });
+}
 </script>
+
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase.js"></script>
