@@ -26,7 +26,7 @@ async function loadAdminPubs() {
 
     div.innerHTML = `
       <strong>${pub.sort_order}. ${pub.name}</strong><br>
-      Status: ${pub.status || "upcoming"}<br>
+      Status: ${pub.status || "upcoming"}<br><br>
 
       <button class="current" onclick="setCurrent(${pub.id})">
         Set Current
@@ -46,27 +46,42 @@ async function loadAdminPubs() {
 }
 
 async function setCurrent(id) {
-  await client.from("pubs").update({ status: "upcoming" }).eq("status", "current");
-  await client.from("pubs").update({ status: "current" }).eq("id", id);
+  await client
+    .from("pubs")
+    .update({ status: "upcoming" })
+    .eq("status", "current");
+
+  await client
+    .from("pubs")
+    .update({ status: "current" })
+    .eq("id", id);
+
   loadAdminPubs();
 }
 
 async function markComplete(id) {
-  await client.from("pubs").update({
-    status: "completed",
-    completed_at: new Date().toISOString()
-  }).eq("id", id);
+  await client
+    .from("pubs")
+    .update({
+      status: "completed",
+      completed_at: new Date().toISOString()
+    })
+    .eq("id", id);
 
   loadAdminPubs();
 }
 
 async function undoComplete(id) {
-  await client.from("pubs").update({
-    status: "upcoming",
-    completed_at: null
-  }).eq("id", id);
+  await client
+    .from("pubs")
+    .update({
+      status: "upcoming",
+      completed_at: null
+    })
+    .eq("id", id);
 
   loadAdminPubs();
 }
 
 document.addEventListener("DOMContentLoaded", loadAdminPubs);
+``
