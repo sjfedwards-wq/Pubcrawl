@@ -39,3 +39,18 @@ function liveTracker(){
       document.getElementById("countdown").innerHTML = "Leave at " + pub.end;
 
       document.querySelectorAll(".card").forEach(c => c.classList.remove("highlight"));
+      document.getElementById("pub"+pub.num)?.classList.add("highlight");
+
+      found = true;
+      break;
+    }
+  }
+
+  if(!found){
+    document.getElementById("currentPub").innerHTML="🍺 Crawl Not Live Yet";
+    document.getElementById("countdown").innerHTML="Get ready...";
+  }
+}
+
+</script>
+``
