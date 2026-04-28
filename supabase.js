@@ -39,8 +39,9 @@ if (current) {
   document.getElementById("countdown").textContent =
     current.start + " – " + current.end;
 } else {
-  document.getElementById("currentPub").textContent = "No pub currently live";
-  document.getElementById("countdown").textContent = "Checking schedule…";
+  document.getElementById("currentPub").textContent = "Awaiting crawl start";
+  document.getElementById("countdown").textContent = "Get ready…";
+
 }
 ``
 
