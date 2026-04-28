@@ -25,17 +25,23 @@ async function loadAdminPubs() {
     const div = document.createElement("div");
     div.className = "pub";
 
-    div.innerHTML = `
-      <strong>${pub.sort_order}. ${pub.name}</strong><br>
-      Status: ${pub.status || "upcoming"}<br>
+    
+div.innerHTML = `
+  <strong>${pub.sort_order}. ${pub.name}</strong><br>
+  Status: ${pub.status || "upcoming"}<br>
 
-      <button class="current" onclick="setCurrent(${pub.id})">
-        Set Current
-      </button>
+  <button class="current" onclick="setCurrent(${pub.id})">
+    Set Current
+  </button>
 
-      <button class="complete" onclick="markComplete(${pub.id})">
-        Mark Completed
-      </button>
+  <button class="complete" onclick="markComplete(${pub.id})">
+    Mark Completed
+  </button>
+
+  <button onclick="undoComplete(${pub.id})">
+    Undo (set upcoming)
+  </button>
+
     `;
 
     container.appendChild(div);
@@ -56,6 +62,15 @@ async function markComplete(id) {
 
   loadAdminPubs();
 }
+
+
+async function undoComplete(id) {
+  await client.from("pubs").update({
+    status: "upcoming",
+    completed_at: null
+  }).eq("id", id);
+
+  loadAdminPubs();
 
 document.addEventListener("DOMContentLoaded", loadAdminPubs);
 ``
