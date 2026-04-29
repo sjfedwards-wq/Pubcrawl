@@ -82,14 +82,17 @@
     }
 
 
+
 .header-logo img {
-  width: 100vw;           /* full screen width */
-  height: auto;
-  max-width: none;        /* remove constraint */
+  width: 100vw;
+  max-height: 160px;        /* ✅ caps the height */
+  object-fit: cover;        /* ✅ crops instead of stretching */
+  display: block;
+
   margin-left: calc(-50vw + 50%);
   margin-right: calc(-50vw + 50%);
-  display: block;
 }
+
 
 
     @keyframes logoFade {
