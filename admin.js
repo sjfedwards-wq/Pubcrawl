@@ -141,3 +141,65 @@ async function saveParticipant(id, name) {
 
   loadParticipantsAdmin();
 }
+
+// ==============================
+// DRINK LOGGING
+// ==============================
+
+async function loadDrinkMatrix() {
+  const { data: participants, error: pError } = await client
+    .from("participants")
+    .select("*")
+    .order("id");
+
+  const { data: drinks, error: dError } = await client
+    .from("drinks")
+    .select("*")
+    .order("id");
+
+  if (pError || dError) {
+    console.error("Error loading drink matrix", pError || dError);
+    return;
+  }
+
+  const container = document.getElementById("drinkMatrix");
+  if (!container) return;
+
+  container.innerHTML = "";
+
+  participants.forEach(p => {
+    let row = `<strong>${p.name}</strong><br />`;
+
+    drinks.forEach(d => {
+      row += `
+        <label style="margin-right:10px;">
+          <input
+            type="checkbox"
+            onclick="logDrink(${p.id}, ${d.id}, ${d.points}, this)"
+          />
+          ${d.label} (${d.points})
+        </label>
+      `;
+    });
+
+    container.innerHTML += `<div style="margin-bottom:12px;">${row}</div>`;
+  });
+}
+
+async function logDrink(participantId, drinkId, points, checkbox) {
+  // reset checkbox immediately (each click = one drink)
+  checkbox.checked = false;
+
+  // log the drink
+  await client.from("drink_log").insert({
+    participant_id: participantId,
+    drink_id: drinkId
+  });
+
+  // update running total
+  await client
+    .from("participants")
+    .update({ total_points: client.rpc("increment", { x: points }) })
+    .eq("id", participantId);
+
+  
