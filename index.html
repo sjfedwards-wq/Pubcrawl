@@ -81,12 +81,16 @@
       margin-bottom: 12px;
     }
 
-    .header-logo img {
-      max-width: 220px;
-      width: 100%;
-      height: auto;
-      animation: logoFade 0.4s ease-out;
-    }
+
+.header-logo img {
+  width: 100vw;           /* full screen width */
+  height: auto;
+  max-width: none;        /* remove constraint */
+  margin-left: calc(-50vw + 50%);
+  margin-right: calc(-50vw + 50%);
+  display: block;
+}
+
 
     @keyframes logoFade {
       from {
