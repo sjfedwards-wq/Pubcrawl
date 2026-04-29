@@ -189,8 +189,9 @@ async function loadDrinkMatrix() {
   });
 }
 
+
 async function logDrink(participantId, drinkId, points, checkbox) {
-  // reset checkbox immediately (each click = one drink)
+  // reset checkbox immediately
   checkbox.checked = false;
 
   // log the drink
@@ -199,10 +200,21 @@ async function logDrink(participantId, drinkId, points, checkbox) {
     drink_id: drinkId
   });
 
-  // update running total
+  // get current total
+  const { data } = await client
+    .from("participants")
+    .select("total_points")
+    .eq("id", participantId)
+    .single();
+
+  // update total safely
   await client
     .from("participants")
-    .update({ total_points: client.rpc("increment", { x: points }) })
+    .update({ total_points: data.total_points + points })
     .eq("id", participantId);
+
+  loadDrinkMatrix();
+}
+
 
   
