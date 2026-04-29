@@ -1,0 +1,99 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Scoreboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
+                   Roboto, Helvetica, Arial, sans-serif;
+      background: #111;
+      color: white;
+      padding: 16px;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 16px;
+    }
+
+    .score-row {
+      background: #1b1b1b;
+      padding: 14px;
+      border-radius: 12px;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .name {
+      font-weight: bold;
+    }
+
+    .points {
+      color: #00d084;
+      font-weight: bold;
+    }
+
+    a.back {
+      display: block;
+      text-align: center;
+      margin-top: 20px;
+      color: #00d084;
+      text-decoration: none;
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+
+<h1>🏆 Scoreboard</h1>
+
+<div id="scoreboard">Loading scores…</div>
+
+<a href="index.html" class="back">← Back to Crawl</a>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase.js"></script>
+
+<script>
+  async function loadScoreboard() {
+    const { data, error } = await client
+      .from("participants")
+      .select("*")
+      .order("total_points", { ascending: false });
+
+    if (error) {
+      console.error(error);
+      return;
+    }
+
+    const container = document.getElementById("scoreboard");
+    container.innerHTML = "";
+
+    if (data.length === 0) {
+      container.innerHTML = "<p>No scores yet.</p>";
+      return;
+    }
+
+    data.forEach((p, i) => {
+      container.innerHTML += `
+        <div class="score-row">
+          <div class="name">${i + 1}. ${p.name}</div>
+          <div class="points">${p.total_points} pts</div>
+        </div>
+      `;
+    });
+  }
+
+  loadScoreboard();
+  setInterval(loadScoreboard, 5000);
+</script>
+
+</body>
+</html>
