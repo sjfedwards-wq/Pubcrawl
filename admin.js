@@ -83,8 +83,11 @@ async function undoComplete(id) {
   loadAdminPubs();
 }
 
-document.addEventListener("DOMContentLoaded", loadAdminPubs);
-``
+document.addEventListener("DOMContentLoaded", () => {
+  loadAdminPubs();
+  loadParticipantsAdmin();
+});
+
 
 // ==============================
 // PARTICIPANTS ADMIN
