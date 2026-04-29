@@ -85,3 +85,56 @@ async function undoComplete(id) {
 
 document.addEventListener("DOMContentLoaded", loadAdminPubs);
 ``
+
+// ==============================
+// PARTICIPANTS ADMIN
+// ==============================
+
+async function loadParticipantsAdmin() {
+  const { data, error } = await client
+    .from("participants")
+    .select("*")
+    .order("id");
+
+  if (error) {
+    console.error("Error loading participants:", error);
+    return;
+  }
+
+  const container = document.getElementById("participantsAdmin");
+  if (!container) return;
+
+  container.innerHTML = "";
+
+  for (let i = 0; i < 8; i++) {
+    const p = data[i];
+
+    container.innerHTML += `
+      <div style="margin-bottom:8px;">
+        <input
+          type="text"
+          placeholder="Participant ${i + 1}"
+          value="${p ? p.name : ""}"
+          onchange="saveParticipant(${p ? p.id : "null"}, this.value)"
+        />
+      </div>
+    `;
+  }
+}
+
+async function saveParticipant(id, name) {
+  if (!name.trim()) return;
+
+  if (id) {
+    await client
+      .from("participants")
+      .update({ name })
+      .eq("id", id);
+  } else {
+    await client
+      .from("participants")
+      .insert({ name });
+  }
+
+  loadParticipantsAdmin();
+}
