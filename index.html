@@ -85,7 +85,7 @@
 
 .header-logo img {
   width: 100vw;
-  max-height: 160px;        /* ✅ caps the height */
+  max-height: clamp(120px, 25vw, 180px);        /* ✅ caps the height */
   object-fit: cover;        /* ✅ crops instead of stretching */
   display: block;
 
@@ -93,6 +93,21 @@
   margin-right: calc(-50vw + 50%);
 }
 
+
+/* Fade the bottom of the banner into the header */
+.header-logo {
+  position: relative;
+}
+
+.header-logo::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 40px;
+  background: linear-gradient(to bottom, transparent, #000);
+}
 
 
     @keyframes logoFade {
