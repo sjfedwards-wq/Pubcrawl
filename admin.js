@@ -173,17 +173,20 @@ async function loadDrinkMatrix() {
   participants.forEach(p => {
     let row = `<strong>${p.name}</strong><br />`;
 
-    drinks.forEach(d => {
-      row += `
-        <label style="margin-right:10px;">
-          <input
-            type="checkbox"
-            onclick="logDrink(${p.id}, ${d.id}, ${d.points}, this)"
-          />
-          ${d.label} (${d.points})
-        </label>
-      `;
-    });
+
+drinks.forEach(d => {
+  row += `
+    <div style="display:inline-block; margin-right:12px;">
+      <button onclick="addDrink(${p.id}, ${d.id}, ${d.points})">
+        + ${d.label}
+      </button>
+      <button onclick="removeDrink(${p.id}, ${d.id}, ${d.points})">
+        −
+      </button>
+    </div>
+  `;
+});
+
 
     container.innerHTML += `<div style="margin-bottom:12px;">${row}</div>`;
   });
@@ -212,6 +215,53 @@ async function logDrink(participantId, drinkId, points, checkbox) {
     .from("participants")
     .update({ total_points: data.total_points + points })
     .eq("id", participantId);
+
+  loadDrinkMatrix();
+}
+
+async function addDrink(participantId, drinkId, points) {
+  // log the drink
+  await client.from("drink_log").insert({
+    participant_id: participantId,
+    drink_id: drinkId
+  });
+
+  // get current total
+  const { data } = await client
+    .from("participants")
+    .select("total_points")
+    .eq("id", participantId)
+    .single();
+
+  // update total
+  await client
+    .from("participants")
+    .update({ total_points: data.total_points + points })
+    .eq("id", participantId);
+
+  loadDrinkMatrix();
+}
+
+async function removeDrink(participantId, drinkId, points) {
+  // prevent score going below zero
+  const { data } = await client
+    .from("participants")
+    .select("total_points")
+    .eq("id", participantId)
+    .single();
+
+  const newTotal = Math.max(0, data.total_points - points);
+
+  await client
+    .from("participants")
+    .update({ total_points: newTotal })
+    .eq("id", participantId);
+
+  // optional: log a negative entry (comment out if you don’t want history)
+  await client.from("drink_log").insert({
+    participant_id: participantId,
+    drink_id: drinkId
+  });
 
   loadDrinkMatrix();
 }
