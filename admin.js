@@ -393,14 +393,30 @@ async function removeDrink(participantId, drinkId, label, points, button) {
     .eq("id", participantId);
 
 
-const { error: logError } = await client.from("drink_log").insert({
-  participant_id: participantId,
-  drink_id: drinkId
-});
 
-if (logError) {
-  console.error("Drink log insert failed (removeDrink):", logError);
+// Find the most recent matching drink log entry
+const { data: lastDrink, error: fetchError } = await client
+  .from("drink_log")
+  .select("id")
+  .eq("participant_id", participantId)
+  .eq("drink_id", drinkId)
+  .order("created_at", { ascending: false })
+  .limit(1)
+  .single();
+
+if (fetchError) {
+  console.error("Failed to find drink to remove:", fetchError);
+} else {
+  const { error: deleteError } = await client
+    .from("drink_log")
+    .delete()
+    .eq("id", lastDrink.id);
+
+  if (deleteError) {
+    console.error("Failed to delete drink log entry:", deleteError);
+  }
 }
+
 
 
   loadDrinkMatrix();
