@@ -47,6 +47,17 @@ button:nth-child(2) {
   color: white;
 }
 
+    
+button.feedback {
+  animation: pressFlash 0.35s ease;
+}
+
+@keyframes pressFlash {
+  0%   { transform: scale(1);   opacity: 1; }
+  50%  { transform: scale(1.15); opacity: 0.7; }
+  100% { transform: scale(1);   opacity: 1; }
+}
+
   
   </style>
 </head>
