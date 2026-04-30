@@ -291,12 +291,14 @@ async function loadDrinkMatrix() {
 drinks.forEach(d => {
   row += `
     <div style="display:inline-block; margin-right:12px;">
-      <button onclick="addDrink(${p.id}, ${d.id}, ${d.points}, this)">
-        +${d.points} ${d.label}
-      </button>
-      <button onclick="removeDrink(${p.id}, ${d.id}, ${d.points}, this)">
-        −${d.points}
-      </button>
+      
+<button onclick="addDrink(${p.id}, ${d.id}, '${d.label}', ${d.points}, this)">
+  ${d.label === 'Non Alcoholic' ? '-1' : '+' + d.points} ${d.label}
+</button>
+<button onclick="removeDrink(${p.id}, ${d.id}, '${d.label}', ${d.points}, this)">
+  ${d.label === 'Non Alcoholic' ? '+1' : '-' + d.points}
+</button>
+
     </div>
   `;
 });
@@ -309,54 +311,62 @@ drinks.forEach(d => {
 
 
 
-async function addDrink(participantId, drinkId, points, button) {
-  
-button.classList.add("feedback");
-setTimeout(() => button.classList.remove("feedback"), 350);
-  
-  // log the drink
+
+async function addDrink(participantId, drinkId, label, points, button) {
+  button.classList.add("feedback");
+  button.disabled = true;
+  setTimeout(() => {
+    button.classList.remove("feedback");
+    button.disabled = false;
+  }, 600);
+
+  // determine actual points
+  const delta = (label === "Non Alcoholic") ? -1 : points;
+
+  const { data } = await client
+    .from("participants")
+    .select("total_points")
+    .eq("id", participantId)
+    .single();
+
+  await client
+    .from("participants")
+    .update({ total_points: data.total_points + delta })
+    .eq("id", participantId);
+
   await client.from("drink_log").insert({
     participant_id: participantId,
     drink_id: drinkId
   });
 
-  // get current total
-  const { data } = await client
-    .from("participants")
-    .select("total_points")
-    .eq("id", participantId)
-    .single();
-
-  // update total
-  await client
-    .from("participants")
-    .update({ total_points: data.total_points + points })
-    .eq("id", participantId);
-
   loadDrinkMatrix();
 }
 
-async function removeDrink(participantId, drinkId, points, button) {
 
-button.classList.add("feedback");
-setTimeout(() => button.classList.remove("feedback"), 350)
 
-  
-  // prevent score going below zero
+async function removeDrink(participantId, drinkId, label, points, button) {
+  button.classList.add("feedback");
+  button.disabled = true;
+  setTimeout(() => {
+    button.classList.remove("feedback");
+    button.disabled = false;
+  }, 600);
+
   const { data } = await client
     .from("participants")
     .select("total_points")
     .eq("id", participantId)
     .single();
 
-  const newTotal = Math.max(0, data.total_points - points);
+  // determine actual points to reverse
+  const delta = (label === "Non Alcoholic") ? 1 : points;
+  const newTotal = Math.max(0, data.total_points - delta);
 
   await client
     .from("participants")
     .update({ total_points: newTotal })
     .eq("id", participantId);
 
-  // optional: log a negative entry (comment out if you don’t want history)
   await client.from("drink_log").insert({
     participant_id: participantId,
     drink_id: drinkId
@@ -364,6 +374,7 @@ setTimeout(() => button.classList.remove("feedback"), 350)
 
   loadDrinkMatrix();
 }
+
 
 
   
