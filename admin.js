@@ -360,9 +360,14 @@ const { error: logError } = await client.from("drink_log").insert({
   drink_id: drinkId
 });
 
-if (logError) {
-  console.error("Drink log insert failed (addDrink):", logError);
-}
+
+await client.from("actions_log").insert({
+  participant_id: participantId,
+  drink_id: drinkId,
+  action_type: "add",
+  points_delta: delta
+});
+
 
 
   loadDrinkMatrix();
@@ -416,6 +421,15 @@ if (fetchError) {
 
   if (deleteError) {
     console.error("Failed to delete drink log entry:", deleteError);
+  } else {
+    
+await client.from("actions_log").insert({
+  participant_id: participantId,
+  drink_id: drinkId,
+  action_type: "remove",
+  points_delta: -delta
+});
+
   }
 }
 
