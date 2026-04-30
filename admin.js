@@ -1,3 +1,19 @@
+
+// ===== ADMIN PIN LOCK =====
+const ADMIN_PIN = "2468";
+
+function checkAdminPIN() {
+  const entered = prompt("Enter admin PIN:");
+  if (entered === ADMIN_PIN) {
+    const admin = document.getElementById("adminContent");
+    if (admin) admin.style.display = "block";
+  } else {
+    alert("Incorrect PIN");
+    window.location.href = "/Pubcrawl/";
+  }
+}
+
+
 const SUPABASE_URL = "https://gydfaowdhubrjweulnrv.supabase.co";
 const SUPABASE_KEY = "sb_publishable_TVuKKjTyZvpz40ROHPIi3g_LcNav48N";
 
@@ -195,12 +211,15 @@ async function insertNewPub() {
 
 
 
+
 document.addEventListener("DOMContentLoaded", () => {
+  checkAdminPIN();
   loadAdminPubs();
   loadParticipantsAdmin();
   loadDrinkMatrix();
   populateInsertAfterDropdown();
 });
+
 
 
 
