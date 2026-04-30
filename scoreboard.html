@@ -107,7 +107,8 @@
 
 <script>
 
-function drunkStatus(points) {
+
+function scoreComment(points) {
   if (points <= 4) return "is sober";
   if (points <= 9) return "is warming up";
   if (points <= 13) return "is slightly mashed";
@@ -115,6 +116,7 @@ function drunkStatus(points) {
   if (points <= 21) return "has achieved enlightenment";
   return "has gone too far as usual";
 }
+
 
 
   
@@ -143,6 +145,7 @@ function drunkStatus(points) {
 
 
 
+
 data.forEach((p, i) => {
   const isLeader = p.total_points === topScore ? "leader" : "";
 
@@ -156,6 +159,7 @@ data.forEach((p, i) => {
     </div>
   `;
 });
+
 
 
 
