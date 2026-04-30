@@ -110,12 +110,8 @@
 <a href="index.html" class="back">← Back to Crawl</a>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="supabase.js"></script>
 
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2cript>
-  // Supabase client setup (REQUIRED)
-  const SUPABASE_URL = "https://gydfaowdhubrjweulnrv.supabase.co";
   const SUPABASE_KEY = "sb_publishable_TVuKKjTyZvpz40ROHPIi3g_LcNav48N";
 
   const client = window.supabase.createClient(
@@ -131,6 +127,7 @@
     if (points <= 21) return "has achieved enlightenment";
     return "has gone too far as usual";
   }
+
 
   async function loadScoreboard() {
     const container = document.getElementById("scoreboard");
