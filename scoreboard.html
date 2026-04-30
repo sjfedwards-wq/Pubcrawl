@@ -127,71 +127,68 @@ function scoreComment(points) {
 
 
   
-  async function loadScoreboard() {
-    
-const { data, error } = await client
-  .from("participants")
-  .select(`
-    id,
-    name,
-    total_points,
-    drink_log (
+ 
+async function loadScoreboard() {
+
+  const { data: participants, error: pError } = await client
+    .from("participants")
+    .select("id, name, total_points")
+    .order("total_points", { ascending: false });
+
+  const { data: drinkLogs, error: dError } = await client
+    .from("drink_log")
+    .select(`
+      participant_id,
       created_at,
       drinks ( label )
-    )
-  `)
-  .order("total_points", { ascending: false });
+    `)
+    .order("created_at", { ascending: true });
 
-    const topScore = Math.max(...data.map(p => p.total_points));
+  if (pError || dError) {
+    console.error("Scoreboard load error:", pError || dError);
+    return;
+  }
 
-    if (error) {
-      console.error(error);
-      return;
+  const container = document.getElementById("scoreboard");
+  container.innerHTML = "";
+
+  if (!participants || participants.length === 0) {
+    container.innerHTML = "<p>No scores yet.</p>";
+    return;
+  }
+
+  // Group drinks by participant
+  const drinksByParticipant = {};
+
+  drinkLogs.forEach(log => {
+    if (!drinksByParticipant[log.participant_id]) {
+      drinksByParticipant[log.participant_id] = [];
     }
+    drinksByParticipant[log.participant_id].push(log.drinks.label);
+  });
 
-    const container = document.getElementById("scoreboard");
-    container.innerHTML = "";
+  const topScore = Math.max(...participants.map(p => p.total_points));
 
-    if (data.length === 0) {
-      container.innerHTML = "<p>No scores yet.</p>";
-      return;
-    }
+  participants.forEach((p, i) => {
+    const isLeader = p.total_points === topScore ? "leader" : "";
+    const drinks = drinksByParticipant[p.id]?.join(" → ") || "No drinks logged";
 
-    
+    container.innerHTML += `
+      <div class="score-row ${isLeader}">
+        <div class="name">
+          ${isLeader ? "👑 " : ""}${i + 1}. ${p.name}
+          <span class="comment">— ${scoreComment(p.total_points)}</span>
+        </div>
 
+        <div class="points">${p.total_points} pts</div>
 
-
-
-
-data.forEach((p, i) => {
-  const isLeader = p.total_points === topScore ? "leader" : "";
-
-  // sort drinks by time (oldest → newest)
-  const drinks = (p.drink_log || [])
-    .sort((a, b) => new Date(a.created_at) - new Date(b.created_at))
-    .map(d => d.drinks.label)
-    .join(" → ");
-
-  container.innerHTML += `
-    <div class="score-row ${isLeader}">
-      <div class="name">
-        ${isLeader ? "👑 " : ""}${i + 1}. ${p.name}
-        <span class="comment">— ${scoreComment(p.total_points)}</span>
+        <div class="drink-track">
+          Drinks: ${drinks}
+        </div>
       </div>
-
-      <div class="points">${p.total_points} pts</div>
-
-      <div class="drink-track">
-        ${drinks ? `Drinks: ${drinks}` : "No drinks logged"}
-      </div>
-    </div>
-  `;
-});
-
-
-
-
-
+    `;
+  });
+}
 
   }
 
