@@ -84,6 +84,36 @@ async function undoComplete(id) {
 }
 
 
+// ==============================
+// INSERT NEW PUB (DROPDOWN SETUP)
+// ==============================
+
+async function populateInsertAfterDropdown() {
+  const { data, error } = await client
+    .from("pubs")
+    .select("*")
+    .order("sort_order");
+
+  if (error) {
+    console.error("Error loading pubs:", error);
+    return;
+  }
+
+  const select = document.getElementById("insertAfterSelect");
+  if (!select) return;
+
+  select.innerHTML = "";
+
+  data.forEach(pub => {
+    const option = document.createElement("option");
+    option.value = pub.id;
+    option.textContent = `${pub.sort_order}. ${pub.name}`;
+    select.appendChild(option);
+  });
+}
+
+
+
 document.addEventListener("DOMContentLoaded", () => {
   loadAdminPubs();
   loadParticipantsAdmin();
