@@ -57,6 +57,31 @@
 }
 
     
+/* Leader highlight */
+.leader {
+  border: 2px solid gold;
+  box-shadow: 0 0 12px rgba(255, 215, 0, 0.6);
+}
+
+.leader .name {
+  color: gold;
+  font-weight: bold;
+}
+
+
+
+/* Leader highlight */
+.leader {
+  border: 2px solid gold;
+  box-shadow: 0 0 12px rgba(255, 215, 0, 0.6);
+}
+
+.leader .name {
+  color: gold;
+  font-weight: bold;
+}
+
+    
   </style>
 </head>
 
@@ -90,6 +115,8 @@ function drunkStatus(points) {
       .select("*")
       .order("total_points", { ascending: false });
 
+    const topScore = Math.max(...data.map(p => p.total_points));
+
     if (error) {
       console.error(error);
       return;
@@ -104,15 +131,20 @@ function drunkStatus(points) {
     }
 
     
+
 data.forEach((p, i) => {
+  const isLeader = p.total_points === topScore ? "leader" : "";
+
   container.innerHTML += `
-    <div class="score-row">
-      <div class="name">${i + 1}. ${p.name}</div>
+    <div class="score-row ${isLeader}">
+      <div class="name">
+        ${isLeader ? "👑 " : ""}${i + 1}. ${p.name}
+      </div>
       <div class="points">${p.total_points} pts</div>
-      <div class="status">${drunkStatus(p.total_points)}</div>
     </div>
   `;
 });
+
 
   }
 
