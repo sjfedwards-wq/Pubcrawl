@@ -1,3 +1,5 @@
+console.log("admin.js loaded");
+
 // v2.1 - force redeploy
 
 const SUPABASE_URL = "https://gydfaowdhubrjweulnrv.supabase.co";
