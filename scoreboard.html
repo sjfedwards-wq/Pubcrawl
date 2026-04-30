@@ -109,9 +109,13 @@
 
 <a href="index.html" class="back">← Back to Crawl</a>
 
+
+
+<!-- Supabase library -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-
+<script>
+  const SUPABASE_URL = "https://gydfaowdhubrjweulnrv.supabase.co";
   const SUPABASE_KEY = "sb_publishable_TVuKKjTyZvpz40ROHPIi3g_LcNav48N";
 
   const client = window.supabase.createClient(
@@ -128,34 +132,27 @@
     return "has gone too far as usual";
   }
 
-
   async function loadScoreboard() {
     const container = document.getElementById("scoreboard");
     container.innerHTML = "";
 
-    let participants = [];
-    let drinkLogs = [];
+    const pRes = await client
+      .from("participants")
+      .select("id, name, total_points")
+      .order("total_points", { ascending: false });
 
-    try {
-      const pRes = await client
-        .from("participants")
-        .select("id, name, total_points")
-        .order("total_points", { ascending: false });
+    const dRes = await client
+      .from("drink_log")
+      .select("participant_id, created_at, drinks(label)")
+      .order("created_at", { ascending: true });
 
-      const dRes = await client
-        .from("drink_log")
-        .select("participant_id, created_at, drinks(label)")
-        .order("created_at", { ascending: true });
-
-      if (pRes.error) console.error("Participants error:", pRes.error);
-      if (dRes.error) console.error("Drink log error:", dRes.error);
-
-      participants = pRes.data || [];
-      drinkLogs = dRes.data || [];
-
-    } catch (err) {
-      console.error("Scoreboard fatal error:", err);
+    if (pRes.error || dRes.error) {
+      container.innerHTML = "<p>Error loading scores.</p>";
+      return;
     }
+
+    const participants = pRes.data || [];
+    const drinkLogs = dRes.data || [];
 
     if (participants.length === 0) {
       container.innerHTML = "<p>No scores yet.</p>";
@@ -165,22 +162,20 @@
     const drinksByParticipant = {};
     drinkLogs.forEach(log => {
       if (!log.drinks) return;
-      if (!drinksByParticipant[log.participant_id]) {
-        drinksByParticipant[log.participant_id] = [];
-      }
+      drinksByParticipant[log.participant_id] ??= [];
       drinksByParticipant[log.participant_id].push(log.drinks.label);
     });
 
     const topScore = Math.max(...participants.map(p => p.total_points));
 
     participants.forEach((p, i) => {
-      const isLeader = p.total_points === topScore ? "leader" : "";
+      const leader = p.total_points === topScore ? "leader" : "";
       const drinks = drinksByParticipant[p.id]?.join(" → ") || "No drinks logged";
 
       container.innerHTML += `
-        <div class="score-row ${isLeader}">
+        <div class="score-row ${leader}">
           <div class="name">
-            ${isLeader ? "👑 " : ""}${i + 1}. ${p.name}
+            ${leader ? "👑 " : ""}${i + 1}. ${p.name}
             <span class="comment">— ${scoreComment(p.total_points)}</span>
           </div>
           <div class="points">${p.total_points} pts</div>
@@ -193,6 +188,7 @@
   loadScoreboard();
   setInterval(loadScoreboard, 5000);
 </script>
+
 
 </body>
 </html>
