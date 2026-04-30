@@ -69,6 +69,30 @@ button:nth-child(2) {
 
 <hr /
 
+
+<h2>Insert New Pub</h2>
+
+<div id="insertPubForm" style="margin-bottom:20px;">
+  <input id="newPubName" placeholder="Pub name" /><br /><br />
+  <input id="newPubAddress" placeholder="Address" /><br /><br />
+  <input id="newPubImage" placeholder="Image URL" /><br /><br />
+  <input id="newPubMap" placeholder="Google Maps link" /><br /><br />
+
+  <label>
+    Insert after:
+    <select id="insertAfterSelect"></select>
+  </label>
+  <br /><br />
+
+  <button onclick="insertNewPub()">
+    Add Pub & Shift Schedule (+30 mins)
+  </button>
+</div>
+
+<hr />
+
+
+  
 <h1>🍻 Pub Crawl Admin</h1>
 <div id="adminList">Loading…</div>
 
