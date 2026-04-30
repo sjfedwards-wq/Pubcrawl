@@ -82,6 +82,15 @@
 }
 
     
+
+.comment {
+  font-style: italic;
+  opacity: 0.85;
+  margin-left: 6px;
+}
+
+
+    
   </style>
 </head>
 
@@ -132,6 +141,8 @@ function drunkStatus(points) {
 
     
 
+
+
 data.forEach((p, i) => {
   const isLeader = p.total_points === topScore ? "leader" : "";
 
@@ -139,11 +150,14 @@ data.forEach((p, i) => {
     <div class="score-row ${isLeader}">
       <div class="name">
         ${isLeader ? "👑 " : ""}${i + 1}. ${p.name}
+        <span class="comment">— ${scoreComment(p.total_points)}</span>
       </div>
       <div class="points">${p.total_points} pts</div>
     </div>
   `;
 });
+
+
 
 
   }
