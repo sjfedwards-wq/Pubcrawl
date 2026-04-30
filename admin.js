@@ -353,10 +353,16 @@ async function addDrink(participantId, drinkId, label, points, button) {
     .update({ total_points: data.total_points + delta })
     .eq("id", participantId);
 
-  await client.from("drink_log").insert({
-    participant_id: participantId,
-    drink_id: drinkId
-  });
+  
+const { error: logError } = await client.from("drink_log").insert({
+  participant_id: participantId,
+  drink_id: drinkId
+});
+
+if (logError) {
+  console.error("Drink log insert failed (addDrink):", logError);
+}
+
 
   loadDrinkMatrix();
 }
@@ -386,10 +392,16 @@ async function removeDrink(participantId, drinkId, label, points, button) {
     .update({ total_points: newTotal })
     .eq("id", participantId);
 
-  await client.from("drink_log").insert({
-    participant_id: participantId,
-    drink_id: drinkId
-  });
+
+const { error: logError } = await client.from("drink_log").insert({
+  participant_id: participantId,
+  drink_id: drinkId
+});
+
+if (logError) {
+  console.error("Drink log insert failed (removeDrink):", logError);
+}
+
 
   loadDrinkMatrix();
 }
