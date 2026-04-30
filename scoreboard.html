@@ -47,6 +47,16 @@
       text-decoration: none;
       font-weight: bold;
     }
+
+
+.status {
+  font-style: italic;
+  opacity: 0.85;
+  margin-left: 10px;
+  text-align: right;
+}
+
+    
   </style>
 </head>
 
@@ -62,6 +72,18 @@
 <script src="supabase.js"></script>
 
 <script>
+
+function drunkStatus(points) {
+  if (points <= 4) return "is sober";
+  if (points <= 9) return "is warming up";
+  if (points <= 13) return "is slightly mashed";
+  if (points <= 17) return "is messy";
+  if (points <= 21) return "has achieved enlightenment";
+  return "has gone too far as usual";
+}
+
+
+  
   async function loadScoreboard() {
     const { data, error } = await client
       .from("participants")
@@ -81,14 +103,17 @@
       return;
     }
 
-    data.forEach((p, i) => {
-      container.innerHTML += `
-        <div class="score-row">
-          <div class="name">${i + 1}. ${p.name}</div>
-          <div class="points">${p.total_points} pts</div>
-        </div>
-      `;
-    });
+    
+data.forEach((p, i) => {
+  container.innerHTML += `
+    <div class="score-row">
+      <div class="name">${i + 1}. ${p.name}</div>
+      <div class="points">${p.total_points} pts</div>
+      <div class="status">${drunkStatus(p.total_points)}</div>
+    </div>
+  `;
+});
+
   }
 
   loadScoreboard();
