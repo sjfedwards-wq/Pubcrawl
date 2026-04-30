@@ -113,6 +113,86 @@ async function populateInsertAfterDropdown() {
 }
 
 
+// ==============================
+// INSERT NEW PUB (CORE LOGIC)
+// ==============================
+
+async function insertNewPub() {
+  const name = document.getElementById("newPubName").value.trim();
+  const address = document.getElementById("newPubAddress").value.trim();
+  const image = document.getElementById("newPubImage").value.trim();
+  const map = document.getElementById("newPubMap").value.trim();
+  const insertAfterId = document.getElementById("insertAfterSelect").value;
+
+  if (!name || !address || !image || !map) {
+    alert("Please fill in all fields.");
+    return;
+  }
+
+  // fetch the pub we’re inserting after
+  const { data: afterPub, error } = await client
+    .from("pubs")
+    .select("*")
+    .eq("id", insertAfterId)
+    .single();
+
+  if (error) {
+    console.error(error);
+    return;
+  }
+
+  const newSortOrder = afterPub.sort_order + 1;
+  const newStart = afterPub.end_time;
+  const newEnd = new Date(new Date(newStart).getTime() + 30 * 60000).toISOString();
+
+  // fetch all pubs after this one that are still upcoming
+  const { data: laterPubs } = await client
+    .from("pubs")
+    .select("*")
+    .gt("sort_order", afterPub.sort_order)
+    .eq("status", "upcoming")
+    .order("sort_order", { ascending: false });
+
+  // shift later pubs (reverse order avoids collisions)
+  for (const pub of laterPubs) {
+    const shiftedStart = new Date(new Date(pub.start_time).getTime() + 30 * 60000).toISOString();
+    const shiftedEnd = new Date(new Date(pub.end_time).getTime() + 30 * 60000).toISOString();
+
+    await client
+      .from("pubs")
+      .update({
+        sort_order: pub.sort_order + 1,
+        start_time: shiftedStart,
+        end_time: shiftedEnd
+      })
+      .eq("id", pub.id);
+  }
+
+  // insert the new pub
+  await client.from("pubs").insert({
+    name,
+    address,
+    img: image,
+    map,
+    sort_order: newSortOrder,
+    start_time: newStart,
+    end_time: newEnd,
+    status: "upcoming"
+  });
+
+  // clear form
+  document.getElementById("newPubName").value = "";
+  document.getElementById("newPubAddress").value = "";
+  document.getElementById("newPubImage").value = "";
+  document.getElementById("newPubMap").value = "";
+
+  // reload admin UI
+  loadAdminPubs();
+  populateInsertAfterDropdown();
+
+  alert("New pub added and schedule shifted by 30 minutes.");
+}
+
 
 document.addEventListener("DOMContentLoaded", () => {
   loadAdminPubs();
