@@ -332,6 +332,7 @@ drinks.forEach(d => {
 
 
 async function addDrink(participantId, drinkId, label, points, button) {
+  console.log("ADD called", participantId, drinkId);
   button.classList.add("feedback");
   button.disabled = true;
   setTimeout(() => {
