@@ -90,6 +90,13 @@
 }
 
 
+.drink-track {
+  margin-top: 6px;
+  font-size: 0.9em;
+  opacity: 0.85;
+  font-style: italic;
+}
+
     
   </style>
 </head>
@@ -121,10 +128,19 @@ function scoreComment(points) {
 
   
   async function loadScoreboard() {
-    const { data, error } = await client
-      .from("participants")
-      .select("*")
-      .order("total_points", { ascending: false });
+    
+const { data, error } = await client
+  .from("participants")
+  .select(`
+    id,
+    name,
+    total_points,
+    drink_log (
+      created_at,
+      drinks ( label )
+    )
+  `)
+  .order("total_points", { ascending: false });
 
     const topScore = Math.max(...data.map(p => p.total_points));
 
@@ -146,8 +162,15 @@ function scoreComment(points) {
 
 
 
+
 data.forEach((p, i) => {
   const isLeader = p.total_points === topScore ? "leader" : "";
+
+  // sort drinks by time (oldest → newest)
+  const drinks = (p.drink_log || [])
+    .sort((a, b) => new Date(a.created_at) - new Date(b.created_at))
+    .map(d => d.drinks.label)
+    .join(" → ");
 
   container.innerHTML += `
     <div class="score-row ${isLeader}">
@@ -155,10 +178,16 @@ data.forEach((p, i) => {
         ${isLeader ? "👑 " : ""}${i + 1}. ${p.name}
         <span class="comment">— ${scoreComment(p.total_points)}</span>
       </div>
+
       <div class="points">${p.total_points} pts</div>
+
+      <div class="drink-track">
+        ${drinks ? `Drinks: ${drinks}` : "No drinks logged"}
+      </div>
     </div>
   `;
 });
+
 
 
 
