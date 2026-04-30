@@ -284,21 +284,23 @@ async function loadDrinkMatrix() {
   container.innerHTML = "";
 
   participants.forEach(p => {
-    let row = `<strong>${p.name}</strong><br />`;
+    let row = `<strong>${p.name}</strong> (${p.total_points} pts)<br />`;
+
 
 
 drinks.forEach(d => {
   row += `
     <div style="display:inline-block; margin-right:12px;">
-      <button onclick="addDrink(${p.id}, ${d.id}, ${d.points})">
-        + ${d.label}
+      <button onclick="addDrink(${p.id}, ${d.id}, ${d.points}, this)">
+        +${d.points} ${d.label}
       </button>
-      <button onclick="removeDrink(${p.id}, ${d.id}, ${d.points})">
-        −
+      <button onclick="removeDrink(${p.id}, ${d.id}, ${d.points}, this)">
+        −${d.points}
       </button>
     </div>
   `;
 });
+
 
 
     container.innerHTML += `<div style="margin-bottom:12px;">${row}</div>`;
@@ -307,7 +309,11 @@ drinks.forEach(d => {
 
 
 
-async function addDrink(participantId, drinkId, points) {
+async function addDrink(participantId, drinkId, points, button) {
+  
+button.classList.add("feedback");
+setTimeout(() => button.classList.remove("feedback"), 350);
+  
   // log the drink
   await client.from("drink_log").insert({
     participant_id: participantId,
@@ -330,7 +336,12 @@ async function addDrink(participantId, drinkId, points) {
   loadDrinkMatrix();
 }
 
-async function removeDrink(participantId, drinkId, points) {
+async function removeDrink(participantId, drinkId, points, button) {
+
+button.classList.add("feedback");
+setTimeout(() => button.classList.remove("feedback"), 350)
+
+  
   // prevent score going below zero
   const { data } = await client
     .from("participants")
