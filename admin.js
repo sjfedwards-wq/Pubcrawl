@@ -370,6 +370,7 @@ if (logError) {
 
 
 async function removeDrink(participantId, drinkId, label, points, button) {
+  console.log("REMOVE called", participantId, drinkId);
   button.classList.add("feedback");
   button.disabled = true;
   setTimeout(() => {
