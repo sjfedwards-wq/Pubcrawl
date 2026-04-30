@@ -128,39 +128,44 @@ function scoreComment(points) {
 
   
  
+
 async function loadScoreboard() {
+  const container = document.getElementById("scoreboard");
+  container.innerHTML = ""; // clear "Loading scores…"
 
-  const { data: participants, error: pError } = await client
-    .from("participants")
-    .select("id, name, total_points")
-    .order("total_points", { ascending: false });
+  let participants = [];
+  let drinkLogs = [];
 
-  const { data: drinkLogs, error: dError } = await client
-    .from("drink_log")
-    .select(`
-      participant_id,
-      created_at,
-      drinks ( label )
-    `)
-    .order("created_at", { ascending: true });
+  try {
+    const pRes = await client
+      .from("participants")
+      .select("id, name, total_points")
+      .order("total_points", { ascending: false });
 
-  if (pError || dError) {
-    console.error("Scoreboard load error:", pError || dError);
-    return;
+    const dRes = await client
+      .from("drink_log")
+      .select("participant_id, created_at, drinks(label)")
+      .order("created_at", { ascending: true });
+
+    if (pRes.error) console.error("Participants error:", pRes.error);
+    if (dRes.error) console.error("Drink log error:", dRes.error);
+
+    participants = pRes.data || [];
+    drinkLogs = dRes.data || [];
+
+  } catch (err) {
+    console.error("Scoreboard fatal error:", err);
   }
 
-  const container = document.getElementById("scoreboard");
-  container.innerHTML = "";
-
-  if (!participants || participants.length === 0) {
+  if (participants.length === 0) {
     container.innerHTML = "<p>No scores yet.</p>";
     return;
   }
 
   // Group drinks by participant
   const drinksByParticipant = {};
-
   drinkLogs.forEach(log => {
+    if (!log.drinks) return; // defensive
     if (!drinksByParticipant[log.participant_id]) {
       drinksByParticipant[log.participant_id] = [];
     }
@@ -179,16 +184,13 @@ async function loadScoreboard() {
           ${isLeader ? "👑 " : ""}${i + 1}. ${p.name}
           <span class="comment">— ${scoreComment(p.total_points)}</span>
         </div>
-
         <div class="points">${p.total_points} pts</div>
-
-        <div class="drink-track">
-          Drinks: ${drinks}
-        </div>
+        <div class="drink-track">Drinks: ${drinks}</div>
       </div>
     `;
   });
 }
+
 
   }
 
