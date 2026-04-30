@@ -194,11 +194,14 @@ async function insertNewPub() {
 }
 
 
+
 document.addEventListener("DOMContentLoaded", () => {
   loadAdminPubs();
   loadParticipantsAdmin();
   loadDrinkMatrix();
+  populateInsertAfterDropdown();
 });
+
 
 
 
@@ -303,31 +306,6 @@ drinks.forEach(d => {
 }
 
 
-async function logDrink(participantId, drinkId, points, checkbox) {
-  // reset checkbox immediately
-  checkbox.checked = false;
-
-  // log the drink
-  await client.from("drink_log").insert({
-    participant_id: participantId,
-    drink_id: drinkId
-  });
-
-  // get current total
-  const { data } = await client
-    .from("participants")
-    .select("total_points")
-    .eq("id", participantId)
-    .single();
-
-  // update total safely
-  await client
-    .from("participants")
-    .update({ total_points: data.total_points + points })
-    .eq("id", participantId);
-
-  loadDrinkMatrix();
-}
 
 async function addDrink(participantId, drinkId, points) {
   // log the drink
